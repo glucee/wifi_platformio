@@ -1,0 +1,17 @@
+#ifndef WIFI_CONFIG_H
+#define WIFI_CONFIG_H
+
+#include <Arduino.h>
+
+#define DATA_PORT 8000
+#define MAX_CLIENTS 4
+#define WIFI_TIMEOUT 10
+#define REMOTE_IP_ADDRESS "192.168.1.180"
+#define REMOTE_GATEWAY_ADDRESS "192.168.1.1"
+#define COMMAND_MIN_LENGTH 7
+#define COMMAND_MAX_LENGTH 12
+#define MAX_DATA_SIZE 300
+
+extern byte COMMANDTEXT[200];
+
+#endif
