@@ -43,61 +43,55 @@ void setup_server(char* ssid = ssid, char* password = password)
 
 void check_client() {
   /* check all clients and accept new clients*/
-  //for(int i = 0 ; i < MAX_CLIENTS; i ++)
-  {
-    WiFiClient client = tg0_server.available();
-    if (client) { // add new client
-      Serial.println("New Client");
-      
-      int empty_index = -1;
-      int client_index = -1;
+  WiFiClient client = tg0_server.available();
+  if (client) { // add new client
+    //Serial.println("New Client");
+    
+    int empty_index = -1;
+    int client_index = -1;
 
-      for (int i = 0; i < MAX_CLIENTS; i++) {  
-        if (tg0_clients[i] != NULL && tg0_clients[i]->remoteIP() == client.remoteIP()) { //if new client exists before
-          client_index = i;
-          break;
-        }
-        else if (tg0_clients[i] == NULL && empty_index == -1) { //also find the first empty index
-          empty_index = i;
-        }
+    for (int i = 0; i < MAX_CLIENTS; i++) {  
+      if (tg0_clients[i] != NULL && tg0_clients[i]->remoteIP() == client.remoteIP()) { //if new client exists before
+        client_index = i;
+        break;
       }
-      if (client_index == -1 && empty_index != -1) // use the empty index
-      {
-        client_index = empty_index;
-
-        Serial.print("Using Empty Index: ");
-        Serial.println(empty_index);
+      else if (tg0_clients[i] == NULL && empty_index == -1) { //also find the first empty index
+        empty_index = i;
       }
-      else if (client_index == -1 && empty_index == -1 ) // use the oldest connected index
-      {
-        int client_longest_time = -1;
-        int start_time = millis();
-        for (int i = 0; i < MAX_CLIENTS; i++) {
-          if ((start_time - history_time[i]) > client_longest_time ){
-              client_longest_time = start_time - history_time[i];
-              client_index = i;
-          }
-        }
-      }
-
-      /* replace new client*/
-      Serial.println(client_index);
-      if(tg0_clients[client_index] != NULL)
-      {
-        tg0_clients[client_index]->stop();
-        delete tg0_clients[client_index];
-      }
-      tg0_clients[client_index] = new WiFiClient(client);
-      tg0_clients[client_index]->setTimeout(WIFI_TIMEOUT);
-      tg0_clients[client_index]->setNoDelay(true);
-      tg0_clients[client_index]->flush();
     }
+    if (client_index == -1 && empty_index != -1) // use the empty index
+    {
+      client_index = empty_index;
+      //Serial.print("Using Empty Index: ");
+      //Serial.println(empty_index);
+    }
+    else if (client_index == -1 && empty_index == -1 ) // use the oldest connected index
+    {
+      int client_longest_time = -1;
+      int start_time = millis();
+      for (int i = 0; i < MAX_CLIENTS; i++) {
+        if ((start_time - history_time[i]) > client_longest_time ){
+            client_longest_time = start_time - history_time[i];
+            client_index = i;
+        }
+      }
+    }
+
+    /* replace new client*/
+    //Serial.println(client_index);
+    if(tg0_clients[client_index] != NULL)
+    {
+      tg0_clients[client_index]->stop();
+      delete tg0_clients[client_index];
+    }
+    tg0_clients[client_index] = new WiFiClient(client);
+    tg0_clients[client_index]->setTimeout(WIFI_TIMEOUT);
+    tg0_clients[client_index]->setNoDelay(true);
   }
 }
 
 void client_to_serial() {
   /* flush all the data from client to serial if there is data available for reading */
-  
   for (int i = 0; i < MAX_CLIENTS; i++) {
     if (tg0_clients[i] != NULL){
       int bytes_to_read = tg0_clients[i]->available();
@@ -106,7 +100,7 @@ void client_to_serial() {
         int returned_bytes = tg0_clients[i]->readBytes(data_to_read, bytes_to_read);
         if (returned_bytes > 0) {
           //Serial.println(bytes_to_read);
-          //Serial.write(data_to_read, returned_bytes);
+          Serial.write(data_to_read, returned_bytes);
         } 
       }
       else if (bytes_to_read > MAX_DATA_SIZE)//if the size is too large
@@ -115,7 +109,6 @@ void client_to_serial() {
         {
           tg0_clients[i]->read();
         }
-        tg0_clients[i]->flush();
         Serial.println("ERROR DATA LENGTH");
       }
     } 

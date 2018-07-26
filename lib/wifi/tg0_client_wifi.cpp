@@ -28,14 +28,12 @@ void check_server()
     {
         if (WiFi.status() == WL_CONNECTED) {
              tg0_client.stop();
-            while (!tg0_client.connect(REMOTE_IP_ADDRESS, DATA_PORT)) {
+             while (!tg0_client.connect(REMOTE_IP_ADDRESS, DATA_PORT)) {
                 delay(5);
             }
         }
         else if (WiFi.status() == WL_DISCONNECTED) {
             tg0_client.stop(); //close existing connection with remote server
-            //WiFi.disconnect(); //not sure if this line is important
-            //WiFi.mode(WIFI_STA);
             WiFi.begin(server_ssid, server_password);
             while (WiFi.status() == WL_CONNECTED) {
                 delay(3);
