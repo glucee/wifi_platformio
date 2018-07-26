@@ -29,8 +29,10 @@ void check_server()
         if (WiFi.status() == WL_CONNECTED) {
              tg0_client.stop();
              while (!tg0_client.connect(REMOTE_IP_ADDRESS, DATA_PORT)) {
-                delay(5);
+                delay(3);
             }
+	    tg0_client.setTimeout(WIFI_TIMEOUT);
+	    tg0_client.setNoDelay(true);
         }
         else if (WiFi.status() == WL_DISCONNECTED) {
             tg0_client.stop(); //close existing connection with remote server
@@ -41,6 +43,8 @@ void check_server()
             while (!tg0_client.connect(REMOTE_IP_ADDRESS, DATA_PORT)) {
                 delay(3);
             }
+	    tg0_client.setTimeout(WIFI_TIMEOUT);
+	    tg0_client.setNoDelay(true);
         }
     }
 }
