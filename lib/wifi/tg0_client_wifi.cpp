@@ -59,3 +59,13 @@ void client_to_server(byte* data, int data_size) {
         tg0_client.write(data, data_size);
     }
 }
+
+int read_server(byte* data) {
+    int data_size = 0;
+    if (tg0_client.connected()) {
+        data_size = tg0_client.available();
+        if(data_size > 0)
+            data_size = tg0_client.readBytes(data, data_size);
+    }
+    return data_size;
+}
