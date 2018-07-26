@@ -17,5 +17,5 @@ extern void check_client();
 extern void client_to_serial();
 extern void server_to_client(byte* data, int data_size);
 extern void run_server();
-extern int read_server(byte* data, int data_size, int client_index);
+extern int read_client(byte* data, int data_size, int client_index);
 #endif

@@ -135,7 +135,7 @@ void server_to_client(byte* data, int data_size) {
   }
 }
 
-int read_server(byte* data, int data_size, int client_index) {
+int read_client(byte* data, int data_size, int client_index) {
     int return_value = -1;
     if (tg0_clients[client_index] != NULL && data_size > 0) {
         return_value = tg0_clients[client_index]->readBytes(data, data_size);
