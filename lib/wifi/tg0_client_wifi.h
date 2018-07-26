@@ -4,7 +4,7 @@
     #include <ESP8266WiFi.h>
 #endif
 #if defined (ESP32)
-    #include <ESP32.h>
+    #include <WiFi.h>
 #endif
 #include "wifi_config.h"
 
