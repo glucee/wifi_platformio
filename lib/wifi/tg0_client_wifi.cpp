@@ -43,8 +43,8 @@ void check_server()
             while (!tg0_client.connect(REMOTE_IP_ADDRESS, DATA_PORT)) {
                 delay(3);
             }
-	    tg0_client.setTimeout(WIFI_TIMEOUT);
-	    tg0_client.setNoDelay(true);
+	        tg0_client.setTimeout(WIFI_TIMEOUT);
+	        tg0_client.setNoDelay(true);
         }
     }
 }
