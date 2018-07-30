@@ -13,6 +13,7 @@ WiFiClient* tg0_clients[MAX_CLIENTS] = { NULL };
 byte data_to_read[MAX_DATA_SIZE] = {0};
 const boolean is_ascii = true;
 int* history_time = new int[MAX_CLIENTS];
+bool data_to_serial = true;
 
 void setup_server(char* ssid = ssid, char* password = password)
 {/* You can remove the password parameter if you want the AP to be open. */
@@ -30,15 +31,16 @@ void setup_server(char* ssid = ssid, char* password = password)
   while(result!=true)
   {
     result = WiFi.softAP(ssid, password, channel);
-    Serial.println("Wifi establishing");
+    //Serial.println("Wifi establishing");
     delay(10);
   }
-  Serial.println("wifi established!");
+  //Serial.println("wifi established!");
   if (ip_addr.fromString(REMOTE_IP_ADDRESS) && gateway.fromString(REMOTE_GATEWAY_ADDRESS)) {
       WiFi.softAPConfig(ip_addr, gateway, subnet);
-      Serial.println("host established!");
+      //Serial.println("host established!");
   }
   tg0_server.begin();
+  data_to_serial = true;
 }
 
 void check_client() {
@@ -75,6 +77,7 @@ void check_client() {
             client_index = i;
         }
       }
+      //Serial.println("REPLACE");
     }
 
     /* replace new client*/
@@ -98,8 +101,7 @@ void client_to_serial() {
       if (bytes_to_read > 0 && bytes_to_read < MAX_DATA_SIZE) { //if there is data available
         history_time[i] = millis(); //save the last read time
         int returned_bytes = tg0_clients[i]->readBytes(data_to_read, bytes_to_read);
-        if (returned_bytes > 0) {
-          //Serial.println(bytes_to_read);
+        if (returned_bytes > 0 && data_to_serial) {
           Serial.write(data_to_read, returned_bytes);
         } 
       }
@@ -109,7 +111,7 @@ void client_to_serial() {
         {
           tg0_clients[i]->read();
         }
-        Serial.println("ERROR DATA LENGTH");
+        //Serial.println("ERROR DATA LENGTH");
       }
     } 
   }
@@ -135,10 +137,20 @@ void server_to_client(byte* data, int data_size) {
   }
 }
 
-int read_client(byte* data, int data_size, int client_index) {
-    int return_value = -1;
-    if (tg0_clients[client_index] != NULL && data_size > 0) {
-        return_value = tg0_clients[client_index]->readBytes(data, data_size);
-    }
-    return return_value;
+void server_status()
+{
+  for (int i = 0 ; i < MAX_CLIENTS; i ++)
+  {
+    Serial.print("\r\n");
+    Serial.print(i);
+    Serial.print(":");
+    if(tg0_clients[i] != NULL)
+      Serial.print(tg0_clients[i]->remoteIP());
+    Serial.print("\r\n");
+  }
+}
+
+void set_data_serial(bool enable)
+{
+  data_to_serial = enable;
 }
