@@ -16,14 +16,15 @@ board=huzzah
 
 2. In the src/ folder, you need to choose to keep main_client.cpp or main_server.cpp for your device.
 
-3. You can use:
+3. You can use Platformio directly to compile or upload the firmware. 
+
+Or you use:
 ```
 make (all): to compile the firmware
 make upload: to upload to your device
 make clean: clean the project
 make update: to update all the libraries
 ```
-3. Enjoy it
 
 ## API Functions
 Server
